@@ -4,14 +4,11 @@
 // This admin app is a separate deployment/origin from the main site — the
 // admin-delete-seed-users endpoint (and the FIREBASE_SERVICE_ACCOUNT_JSON
 // env var it needs) stays on the main project rather than being
-// duplicated here, so this file calls it by full URL below. The main
-// site's vercel.json already sets Access-Control-Allow-Origin: * on
-// every /api/(.*) route, so the cross-origin POST works with no extra
-// CORS config on either side.
-//
-// ⚠️ UPDATE THIS the same moment you update ADMIN_APP_URL in the main
-// app's router.js — this must be your real deployed main-site domain.
-const MAIN_APP_URL = 'https://bumbook.vercel.app';
+// duplicated here, so this file calls it by full URL via API_BASE
+// (defined in config.js, which loads before this file). The main site's
+// vercel.json already sets Access-Control-Allow-Origin: * on every
+// /api/(.*) route, so the cross-origin POST works with no extra CORS
+// config on either side.
 
 /* ══════════════════════════════════════════════
    ADMIN TABS
@@ -65,7 +62,7 @@ async function confirmDeleteSeedData() {
       const removedSoFar = Object.values(totals).reduce((a, b) => a + b, 0);
       if (progress) progress.innerHTML = `<div style="color:var(--text-dim)">Deleting ${type}… (${removedSoFar} removed so far)</div>`;
       try {
-        const resp = await fetch(MAIN_APP_URL + '/api/admin-delete-seed-users', {
+        const resp = await fetch(API_BASE + '/api/admin-delete-seed-users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify({ type })

@@ -28,7 +28,7 @@ async function fetchBlueskyBatch(count) {
   try {
     const params = new URLSearchParams({ niche, action: 'feed' });
     if (_blueskyCursors[niche]) params.set('cursor', _blueskyCursors[niche]);
-    const resp = await fetch('/api/bluesky?' + params.toString());
+    const resp = await fetch(API_BASE + '/api/bluesky?' + params.toString());
     const data = await resp.json();
     if (!data.configured || data.error || !data.items) return [];
     if (data.cursor) _blueskyCursors[niche] = data.cursor;
@@ -38,14 +38,14 @@ async function fetchBlueskyBatch(count) {
 
 async function fetchBlueskyProfile(actor) {
   try {
-    const resp = await fetch('/api/bluesky?action=profile&actor=' + encodeURIComponent(actor));
+    const resp = await fetch(API_BASE + '/api/bluesky?action=profile&actor=' + encodeURIComponent(actor));
     return await resp.json();
   } catch (e) { return { profile: null, posts: [], error: 'fetch' }; }
 }
 
 async function fetchBlueskyPost(uri) {
   try {
-    const resp = await fetch('/api/bluesky?action=post&uri=' + encodeURIComponent(uri));
+    const resp = await fetch(API_BASE + '/api/bluesky?action=post&uri=' + encodeURIComponent(uri));
     return await resp.json();
   } catch (e) { return { post: null, replies: [], error: 'fetch' }; }
 }
@@ -54,7 +54,7 @@ async function fetchBlueskyDiscoverAccounts(niche) {
   try {
     const params = new URLSearchParams({ action: 'discover' });
     if (niche) params.set('niche', niche);
-    const resp = await fetch('/api/bluesky?' + params.toString());
+    const resp = await fetch(API_BASE + '/api/bluesky?' + params.toString());
     const data = await resp.json();
     return (data.configured && !data.error) ? (data.accounts || []) : [];
   } catch (e) { return []; }
@@ -326,7 +326,7 @@ async function _submitBskyConnect() {
   const modal = document.getElementById('bskyConnectModal');
   try {
     const idToken = await currentUser.getIdToken();
-    const resp = await fetch('/api/bsky-connect-start', {
+    const resp = await fetch(API_BASE + '/api/bsky-auth?action=connect-start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
       body: JSON.stringify({ handle })
@@ -341,7 +341,7 @@ async function disconnectBsky() {
   if (!confirm('Disconnect your Bluesky account from bumbook?')) return;
   try {
     const idToken = await currentUser.getIdToken();
-    const resp = await fetch('/api/bsky-disconnect', {
+    const resp = await fetch(API_BASE + '/api/bsky-auth?action=disconnect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken }
     });
@@ -349,7 +349,7 @@ async function disconnectBsky() {
     if (data.error) {
       // Falls back to at least clearing bumbook's own record even if the
       // server-side revoke itself failed, so the person isn't stuck
-      // showing as "connected" with no way out — see bsky-disconnect.js's
+      // showing as "connected" with no way out — see the disconnect action in bsky-auth.js's
       // own best-effort fallback for why revoke specifically can fail.
       console.error('[bsky] disconnect endpoint reported an error, clearing local record anyway:', data.message || data.error);
       await window.XF.remove('bskyConnections/' + currentUser.uid).catch(() => {});
