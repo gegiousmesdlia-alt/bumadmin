@@ -2,26 +2,8 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/u/:handle",
-      "destination": "/api/profile?user=:handle"
-    },
-    {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
-      ]
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/cleanup-expired-requests",
-      "schedule": "0 9 * * *"
     }
   ]
 }

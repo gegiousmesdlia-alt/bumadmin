@@ -126,10 +126,9 @@ function friendlyError(code) {
 async function onAuthChange(user) {
   currentUser = user;
   const loc = (typeof pageFromLocation === 'function' && pageFromLocation()) || null;
-  // The standalone admin app (admin-app/index.html, a separate deployment
-  // as of this pass) is a separate, non-SPA document and sets
-  // window.__PAGE__ inline before boot.js runs; this merged SPA shell
-  // doesn't, and is routed from the URL instead.
+  // admin.html is a separate, non-SPA document and sets window.__PAGE__
+  // inline before boot.js runs; the merged SPA shell doesn't, and is
+  // routed from the URL instead.
   const page = window.__PAGE__ || (loc ? loc.name : 'landing');
   const opts = loc ? loc.opts : {};
   window.__PAGE__ = page;
