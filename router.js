@@ -5,8 +5,7 @@
 // right view.
 'use strict';
 
-// This is the standalone admin app's own router.js copy — it never
-// redirects to another admin URL, since it already IS that app.
+const ADMIN_APP_URL = 'https://bumadmin.vercel.app';
 
 const PAGE_ROUTES = {
   landing:        '/',
@@ -48,9 +47,7 @@ function pageFromLocation() {
 const AUTH_PAGES = new Set(['landing', 'login', 'register', 'reset']);
 
 function showPage(name, opts = {}) {
-  // NOTE: unlike the main app's router.js, this copy (inside admin-app/)
-  // does NOT redirect 'admin' elsewhere — this IS the admin app, so
-  // 'admin' is a normal local page here.
+  if (name === 'admin') { window.location.href = ADMIN_APP_URL; return; }
 
   // Leaving reels: tear down the players, or audio keeps playing over
   // whatever page the user just navigated to.

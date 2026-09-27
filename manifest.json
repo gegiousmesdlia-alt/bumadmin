@@ -1,7 +1,7 @@
 {
-  "name": "Bum Book Admin",
-  "short_name": "BB Admin",
-  "description": "Bum Book admin panel.",
+  "name": "Bum Book",
+  "short_name": "Bum Book",
+  "description": "Connect, share, and chat with people who matter to you.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
